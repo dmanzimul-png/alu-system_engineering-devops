@@ -1,20 +1,21 @@
 #!/usr/bin/env bash
-# Configures nginx with a custom 404 page
+# Installs nginx and configures a custom 404 page
 
 apt-get update -y
-apt-get install nginx -y
+apt-get install -y nginx
 
 echo "Holberton School for the win!" > /var/www/html/index.html
-
 echo "Ceci n'est pas une page" > /var/www/html/404.html
 
-cat > /etc/nginx/sites-available/default <<EOF
+cat > /etc/nginx/sites-available/default <<'EOF'
 server {
     listen 80 default_server;
     listen [::]:80 default_server;
 
     root /var/www/html;
-    index index.html;
+    index index.html index.htm index.nginx-debian.html;
+
+    server_name _;
 
     error_page 404 /404.html;
 
@@ -27,7 +28,7 @@ server {
     }
 
     location / {
-        try_files \$uri \$uri/ =404;
+        try_files $uri $uri/ =404;
     }
 }
 EOF
